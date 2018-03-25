@@ -115,7 +115,11 @@ public class BitmapInfoHeader {
             @Override
             public ChannelMasks extractChannelMasks(ByteBuffer bytes, int bitsPerPixel) {
                 if (isClrUsed(bytes, bitsPerPixel)) {
-                    return new ChannelMasks((1 << bitsPerPixel) - 1, 0, 0, 0, 0);
+                    return new ChannelMasks((1 << bitsPerPixel) - 1,
+                            0,
+                            0,
+                            0,
+                            0);
                 }
                 return defaultMask(bitsPerPixel);
             }
@@ -144,7 +148,11 @@ public class BitmapInfoHeader {
             @Override
             public ChannelMasks extractChannelMasks(ByteBuffer bytes, int bitsPerPixel) {
                 if (isClrUsed(bytes, bitsPerPixel)) {
-                    return new ChannelMasks((1 << bitsPerPixel) - 1, 0, 0, 0, 0);
+                    return new ChannelMasks((1 << bitsPerPixel) - 1,
+                            0,
+                            0,
+                            0,
+                            0);
                 }
                 return defaultMask(bitsPerPixel);
             }
@@ -172,7 +180,11 @@ public class BitmapInfoHeader {
             @Override
             public ChannelMasks extractChannelMasks(ByteBuffer bytes, int bitsPerPixel) {
                 if (isClrUsed(bytes, bitsPerPixel)) {
-                    return new ChannelMasks((1 << bitsPerPixel) - 1, 0, 0, 0, 0);
+                    return new ChannelMasks((1 << bitsPerPixel) - 1,
+                            0,
+                            0,
+                            0,
+                            0);
                 }
                 return extractMaskFromBytes(bytes, bitsPerPixel);
             }
@@ -200,7 +212,11 @@ public class BitmapInfoHeader {
             @Override
             public ChannelMasks extractChannelMasks(ByteBuffer bytes, int bitsPerPixel) {
                 if (isClrUsed(bytes, bitsPerPixel)) {
-                    return new ChannelMasks((1 << bitsPerPixel) - 1, 0, 0, 0, 0);
+                    return new ChannelMasks((1 << bitsPerPixel) - 1,
+                            0,
+                            0,
+                            0,
+                            0);
                 }
                 return extractMaskFromBytes(bytes, bitsPerPixel);
             }
@@ -231,7 +247,11 @@ public class BitmapInfoHeader {
             if (red == 0 && green == 0 && blue == 0 && alpha == 0) {
                 return defaultMask(bitsPerPixel);
             }
-            return new ChannelMasks(0, red, green, blue, alpha);
+            return new ChannelMasks(0,
+                    red,
+                    green,
+                    blue,
+                    alpha);
         }
         public boolean isClrUsed(ByteBuffer bytes, int bitsPerPixel) {
             return (bitsPerPixel <= 8) || (this != CORE && bytes.getInt(0x20) > 0);
@@ -239,15 +259,35 @@ public class BitmapInfoHeader {
         private static ChannelMasks defaultMask(int bitsPerPixel) {
             switch (bitsPerPixel) {
                 case 16:
-                    return new ChannelMasks(0, 0x7c00, 0x03e0, 0x001f, 0);
+                    return new ChannelMasks(0,
+                            0x7c00,
+                            0x03e0,
+                            0x001f,
+                            0);
                 case 32:
-                    return new ChannelMasks(0, 0x00ff_0000L, 0x0000_ff00L, 0x0000_00ffL, 0x0000_0000L);
+                    return new ChannelMasks(0,
+                            0x00ff_0000L,
+                            0x0000_ff00L,
+                            0x0000_00ffL,
+                            0x0000_0000L);
                 case 24:
-                    return new ChannelMasks(0, 0x00ff_0000L, 0x0000_ff00L, 0x0000_00ffL, 0);
+                    return new ChannelMasks(0,
+                            0x00ff_0000L,
+                            0x0000_ff00L,
+                            0x0000_00ffL,
+                            0);
                 case 48:
-                    return new ChannelMasks(0, 0xffff_0000_0000L, 0x0000_ffff_0000L, 0x0000_0000_ffffL, 0x0000_0000_0000L);
+                    return new ChannelMasks(0,
+                            0xffff_0000_0000L,
+                            0x0000_ffff_0000L,
+                            0x0000_0000_ffffL,
+                            0x0000_0000_0000L);
                 case 64:
-                    return new ChannelMasks(0, 0xffff_0000_0000_0000L, 0x0000_ffff_0000_0000L, 0x0000_0000_ffff_0000L, 0x0000_0000_0000_0000L);
+                    return new ChannelMasks(0,
+                            0xffff_0000_0000_0000L,
+                            0x0000_ffff_0000_0000L,
+                            0x0000_0000_ffff_0000L,
+                            0x0000_0000_0000_0000L);
                 default:
                     return null;
             }
