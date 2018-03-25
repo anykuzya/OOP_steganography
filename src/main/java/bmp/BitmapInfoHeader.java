@@ -30,6 +30,7 @@ public class BitmapInfoHeader {
      */
     @NotNull
     public PixmapType type() {
+        ensureSupported();
         return type;
     }
 
@@ -37,6 +38,7 @@ public class BitmapInfoHeader {
      * Высота растра в пикселях
      */
     public int width() {
+        ensureSupported();
         return width;
     }
 
@@ -44,6 +46,7 @@ public class BitmapInfoHeader {
      * Ширина растра в пикселях
      */
     public int height() {
+        ensureSupported();
         return height;
     }
 
@@ -51,6 +54,7 @@ public class BitmapInfoHeader {
      * Ширина пикселя в битах
      */
     public int bitsPerPixel() {
+        ensureSupported();
         return bitsPerPixel;
     }
 
@@ -59,8 +63,14 @@ public class BitmapInfoHeader {
      * В противном случае, будут использованы маски по умолчанию для значения {@link BitmapInfoHeader#bitsPerPixel()}.
      */
     @NotNull
-    public ChannelMasks channelMaks() {
+    public ChannelMasks channelMasks() {
         return channelMaks;
+    }
+
+    private void ensureSupported() {
+        if (this.type == UNSUPPORTED) {
+            throw new IllegalStateException("Header is unsupported");
+        }
     }
 
     public static BitmapInfoHeader ofBytes(@NotNull ByteBuffer infoBytes) {
@@ -81,7 +91,13 @@ public class BitmapInfoHeader {
             return unsupportedHeader();
         }
 
-        return new BitmapInfoHeader(type, version.extractWidth(infoBytes), version.extractHeight(infoBytes), bitsPerPixel, version.extractChannelMasks(infoBytes, bitsPerPixel));
+        return new BitmapInfoHeader(
+                type,
+                version.extractWidth(infoBytes),
+                version.extractHeight(infoBytes),
+                bitsPerPixel,
+                version.extractChannelMasks(infoBytes, bitsPerPixel)
+        );
     }
 
     @NotNull
