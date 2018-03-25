@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 import static lombok.AccessLevel.PRIVATE;
 
 @EqualsAndHashCode
-class ChannelMasks {
+public class ChannelMasks {
 
     /**
      * Данная маска задается только в случаях, когда пиксели кодируются номером строки в таблице цветов.

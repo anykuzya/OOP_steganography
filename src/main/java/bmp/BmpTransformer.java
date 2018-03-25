@@ -1,24 +1,24 @@
 package bmp;
 
+import bmp.pixmap.ChannelMapperFactory;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
-import java.util.function.LongUnaryOperator;
 
 @RequiredArgsConstructor
 public class BmpTransformer {
 
-    private final LongUnaryOperator pixelMapper;
+    private final ChannelMapperFactory channelMaperFactory;
 
     public void transform(ReadableByteChannel bmpInput, WritableByteChannel bmpOutput) throws IOException{
 
         BitmapInfoHeader infoHeader = transferUponPixmap(bmpInput, bmpOutput);
-
-        // TODO: implement
-        // а потом подумаю
+        // 1. прочитать pixmap
+        // 2. в зависимости от infoHeader.type() создать нужный PixmapTransformer и произвести трансформацию
+        // 3. записать получившийся результат в bmpOutput
     }
 
     private BitmapInfoHeader transferUponPixmap(ReadableByteChannel bmpInput, WritableByteChannel bmpOutput)
