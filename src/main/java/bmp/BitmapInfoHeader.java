@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.ReadableByteChannel;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
@@ -73,7 +75,23 @@ public class BitmapInfoHeader {
         }
     }
 
-    public static BitmapInfoHeader ofBytes(@NotNull ByteBuffer infoBytes) {
+    public static BufferAndHeader<BitmapInfoHeader> read(ReadableByteChannel input) throws IOException {
+        ByteBuffer infoHeaderSizeBuffer = ByteBuffer.allocate(Integer.BYTES).order(LITTLE_ENDIAN);
+        if (input.read(infoHeaderSizeBuffer) < 4) {
+            throw new IOException();
+        }
+        int infoHeaderSize = infoHeaderSizeBuffer.getInt(0);
+        ByteBuffer infoHeaderBuffer = ByteBuffer.allocate(infoHeaderSize).order(LITTLE_ENDIAN);
+        infoHeaderSizeBuffer.flip();
+        infoHeaderBuffer.put(infoHeaderSizeBuffer);
+        if (input.read(infoHeaderBuffer) + 4 != infoHeaderSize) {
+            throw new IOException();
+        }
+        infoHeaderBuffer.flip();
+        return new BufferAndHeader<>(infoHeaderBuffer.asReadOnlyBuffer(), ofBytes(infoHeaderBuffer));
+    }
+
+    private static BitmapInfoHeader ofBytes(@NotNull ByteBuffer infoBytes) {
         infoBytes = infoBytes.asReadOnlyBuffer().order(LITTLE_ENDIAN);
         int size = infoBytes.getInt(0x00);
         Version version = Version.ofSize(size);

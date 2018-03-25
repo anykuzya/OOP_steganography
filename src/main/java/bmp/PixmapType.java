@@ -1,6 +1,6 @@
 package bmp;
 
-public enum PixmapType {
+enum PixmapType {
     PIXEL_MATRIX,
     RLE,
     UNSUPPORTED
