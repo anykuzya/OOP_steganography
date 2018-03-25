@@ -3,9 +3,12 @@ package bmp;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.junit.Test;
+import utils.NioUtils;
+import utils.NioUtils.ChannelAndBuffer;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.channels.ReadableByteChannel;
 
 import static bmp.BitmapInfoHeaderTests.Version.*;
 import static bmp.PixmapType.PIXEL_MATRIX;
@@ -24,29 +27,29 @@ public class BitmapInfoHeaderTests {
 
 
     @Test
-    public void shouldRecognizeImageShapeCorrectly() {
+    public void shouldRecognizeImageShapeCorrectly() throws Exception {
         BitmapInfo bitmapInfo = BitmapInfo.builder()
                 .width(1600)
                 .height(900)
                 .build();
 
         for (Version version : Version.values()) {
-            ByteBuffer testHeader = bitmapInfo.toBytes(version);
-            BitmapInfoHeader parsedHeader = BitmapInfoHeader.ofBytes(testHeader);
+            ReadableByteChannel testHeader = bitmapInfo.toChannel(version);
+            BitmapInfoHeader parsedHeader = BitmapInfoHeader.read(testHeader).getHeader();
             assertEquals("Width in version " + version, 1600, parsedHeader.width());
             assertEquals("Height in version" + version, 900, parsedHeader.height());
         }
     }
 
     @Test
-    public void shouldRecognizeV5Rle8() {
+    public void shouldRecognizeV5Rle8() throws Exception {
         BitmapInfo bitmapInfo = BitmapInfo.builder()
                 .bitCount(8)
                 .compression(1)
                 .clrUsed(174)
                 .build();
-        ByteBuffer testHeader = bitmapInfo.toBytes(V5);
-        BitmapInfoHeader parsedHeader = BitmapInfoHeader.ofBytes(testHeader);
+        ReadableByteChannel testHeader = bitmapInfo.toChannel(V5);
+        BitmapInfoHeader parsedHeader = BitmapInfoHeader.read(testHeader).getHeader();
 
         assertEquals(RLE, parsedHeader.type());
         assertEquals(8, parsedHeader.bitsPerPixel());
@@ -54,13 +57,13 @@ public class BitmapInfoHeaderTests {
     }
 
     @Test
-    public void shouldUseDefaultMasksWhenTheyAreNotSpecified() {
+    public void shouldUseDefaultMasksWhenTheyAreNotSpecified() throws Exception {
         BitmapInfo bitmapInfo = BitmapInfo.builder()
                 .bitCount(32)
                 .compression(3) // BI_BITFIELDS
                 .build();
-        ByteBuffer testHeader = bitmapInfo.toBytes(V4);
-        BitmapInfoHeader parsedHeader = BitmapInfoHeader.ofBytes(testHeader);
+        ReadableByteChannel testHeader = bitmapInfo.toChannel(V4);
+        BitmapInfoHeader parsedHeader = BitmapInfoHeader.read(testHeader).getHeader();
         ChannelMasks parsedMasks = parsedHeader.channelMasks();
 
         assertEquals(PIXEL_MATRIX, parsedHeader.type());
@@ -73,7 +76,7 @@ public class BitmapInfoHeaderTests {
     }
 
     @Test
-    public void shouldRecognizeV4Pixmatrix16bitCustomMasks() {
+    public void shouldRecognizeV4Pixmatrix16bitCustomMasks() throws Exception {
         BitmapInfo bitmapInfo = BitmapInfo.builder()
                 .alpha(0b00_00_00_11)
                 .red(0b11_00_00_00)
@@ -85,8 +88,8 @@ public class BitmapInfoHeaderTests {
                 .clrUsed(0)
                 .compression(6)
                 .build();
-        ByteBuffer testHeader = bitmapInfo.toBytes(V4);
-        BitmapInfoHeader parsedHeader = BitmapInfoHeader.ofBytes(testHeader);
+        ReadableByteChannel testHeader = bitmapInfo.toChannel(V4);
+        BitmapInfoHeader parsedHeader = BitmapInfoHeader.read(testHeader).getHeader();
 
         assertEquals(300, parsedHeader.height());
         assertEquals(600, parsedHeader.width());
@@ -111,27 +114,29 @@ public class BitmapInfoHeaderTests {
         int blue = 0;
         int alpha = 0;
 
-        ByteBuffer toBytes(Version v) {
-            ByteBuffer bb = ByteBuffer.allocate(v.size)
-                    .order(ByteOrder.LITTLE_ENDIAN)
-                    .putInt(0x00, v.size);
+        ReadableByteChannel toChannel(Version v) {
+
+            ChannelAndBuffer channelAndBuffer = NioUtils.newChannelAndBuffer(v.size);
+
+            ByteBuffer bb = channelAndBuffer.getBuffer().putInt(0x00, v.size);
             if (v == CORE) {
-                return bb.putShort(0x04, (short) width)
+                bb.putShort(0x04, (short) width)
                         .putShort(0x06, (short) height)
                         .putShort(0x0a, (short) bitCount);
+            } else {
+                bb.putInt(0x04, width)
+                        .putInt(0x08, height)
+                        .putShort(0x0e, (short) bitCount)
+                        .putInt(0x10, compression)
+                        .putInt(0x20, clrUsed);
+                if (v == V4 || v == V5) {
+                    bb.putInt(0x28, red)
+                            .putInt(0x2c, green)
+                            .putInt(0x30, blue)
+                            .putInt(0x34, alpha);
+                }
             }
-            bb.putInt(0x04, width)
-                    .putInt(0x08, height)
-                    .putShort(0x0e, (short) bitCount)
-                    .putInt(0x10, compression)
-                    .putInt(0x20, clrUsed);
-            if (v == V4 || v == V5) {
-                bb.putInt(0x28, red)
-                        .putInt(0x2c, green)
-                        .putInt(0x30, blue)
-                        .putInt(0x34, alpha);
-            }
-            return bb;
+            return channelAndBuffer.getChannel();
         }
     }
 
