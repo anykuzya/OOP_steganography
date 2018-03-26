@@ -25,12 +25,12 @@ public class NioUtils {
         ByteBuffer buffer;
     }
 
-    public static ByteBuffer createPixmap(byte[] commands) {
-        ByteBuffer pixmap = ByteBuffer.allocate(commands.length).order(LITTLE_ENDIAN);
-        for (byte command : commands) {
-            pixmap.put(command);
+    public static ByteBuffer createByteBuffer(byte[] bytes) {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(bytes.length).order(LITTLE_ENDIAN);
+        for (byte b : bytes) {
+            byteBuffer.put(b);
         }
-        pixmap.flip();
-        return pixmap;
+        byteBuffer.flip();
+        return byteBuffer;
     }
 }

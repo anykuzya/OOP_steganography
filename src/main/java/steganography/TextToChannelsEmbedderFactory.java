@@ -29,7 +29,9 @@ import static java.nio.ByteOrder.LITTLE_ENDIAN;
 public class TextToChannelsEmbedderFactory implements ChannelMapperFactory {
 
     static final int HEADER_SIZE_BYTES = 5;
-
+    /**
+     * supposed to be power of 2 (1, 2, 4 or 8)
+     */
     private final int bitsPerChannel;
     private final String textToEmbed;
     private final Encoding encoding;

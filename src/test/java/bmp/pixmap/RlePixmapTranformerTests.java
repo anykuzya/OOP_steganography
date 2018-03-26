@@ -4,15 +4,13 @@ import bmp.BitmapInfoHeader;
 import bmp.ChannelMasks;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 
 import java.nio.ByteBuffer;
 
 import static bmp.PixmapType.RLE;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
-import static utils.NioUtils.createPixmap;
+import static utils.NioUtils.createByteBuffer;
 
 public class RlePixmapTranformerTests {
 
@@ -30,7 +28,7 @@ public class RlePixmapTranformerTests {
                 0x09, 0x1E, // закрасить следующие 9 пикселей цветом 0x1E
                 0x00, 0x01, // завершить
         };
-        ByteBuffer pixmap = createPixmap(commands);
+        ByteBuffer pixmap = createByteBuffer(commands);
         ChannelMasks channelMasks = new ChannelMasks(0x0f, 0, 0, 0, 0);
         BitmapInfoHeader infoHeader = new BitmapInfoHeader(RLE, 13, 3, 8, channelMasks);
 
@@ -52,7 +50,7 @@ public class RlePixmapTranformerTests {
                 0x00, 0x01, // завершить
         };
 
-        assertEquals(createPixmap(commandsAfter), pixmap);
+        assertEquals(createByteBuffer(commandsAfter), pixmap);
 
     }
 

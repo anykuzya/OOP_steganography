@@ -8,9 +8,8 @@ import org.junit.Test;
 import java.nio.ByteBuffer;
 
 import static bmp.PixmapType.RLE;
-import static java.nio.ByteOrder.LITTLE_ENDIAN;
 import static org.mockito.Mockito.*;
-import static utils.NioUtils.createPixmap;
+import static utils.NioUtils.createByteBuffer;
 import static org.junit.Assert.assertEquals;
 
 public class RlePixmapReaderTests {
@@ -30,7 +29,7 @@ public class RlePixmapReaderTests {
                 0x09, 0x1E, // закрасить следующие 9 пикселей цветом 0x1E
                 0x00, 0x01, // завершить
         };
-        ByteBuffer pixmap = createPixmap(commands);
+        ByteBuffer pixmap = createByteBuffer(commands);
         ChannelMasks channelMasks = new ChannelMasks(0x0f, 0, 0, 0, 0);
         BitmapInfoHeader infoHeader = new BitmapInfoHeader(RLE, 13, 3, 8, channelMasks);
         new RlePixmapReader(this.channelConsumer).readPixmap(pixmap, infoHeader);
@@ -46,7 +45,7 @@ public class RlePixmapReaderTests {
         verify(this.channelConsumer).finishConsumption();
         verifyNoMoreInteractions(this.channelConsumer);
 
-        assertEquals(createPixmap(commands), pixmap);
+        assertEquals(createByteBuffer(commands), pixmap);
     }
 
     @Before
