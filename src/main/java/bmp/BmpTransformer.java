@@ -1,7 +1,11 @@
 package bmp;
 
 import bmp.pixmap.ChannelMapperFactory;
+import bmp.pixmap.MatrixPixmapTransformer;
+import bmp.pixmap.PixmapTransformer;
+import bmp.pixmap.RlePixmapTransformer;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -11,17 +15,36 @@ import java.nio.channels.WritableByteChannel;
 @RequiredArgsConstructor
 public class BmpTransformer {
 
-    private final ChannelMapperFactory channelMaperFactory;
+    private final ChannelMapperFactory channelMapperFactory;
 
     public void transform(ReadableByteChannel bmpInput, WritableByteChannel bmpOutput) throws IOException{
 
-        BitmapInfoHeader infoHeader = transferUponPixmap(bmpInput, bmpOutput);
-        // 1. прочитать pixmap
-        // 2. в зависимости от infoHeader.type() создать нужный PixmapTransformer и произвести трансформацию
-        // 3. записать получившийся результат в bmpOutput
+        Headers headers =  transferUponPixmap(bmpInput, bmpOutput);
+        BitmapInfoHeader infoHeader = headers.getInfoHeader();
+        PixmapTransformer transformer;
+        switch (infoHeader.type()) {
+            case RLE:
+                transformer = new RlePixmapTransformer(channelMapperFactory);
+                break;
+            case PIXEL_MATRIX:
+                transformer = new MatrixPixmapTransformer(channelMapperFactory);
+                break;
+            case UNSUPPORTED:
+                throw new IllegalArgumentException();
+            default:
+                throw new IllegalStateException();
+
+        }
+        BitmapFileHeader fileHeader = headers.getFileHeader();
+        ByteBuffer pixmap = ByteBuffer.allocate(fileHeader.fileSizeBytes() - fileHeader.pixmapOffsetBytes());
+        bmpInput.read(pixmap);
+
+        transformer.transform(pixmap, infoHeader);
+
+        bmpOutput.write(pixmap);
     }
 
-    private BitmapInfoHeader transferUponPixmap(ReadableByteChannel bmpInput, WritableByteChannel bmpOutput)
+    private Headers transferUponPixmap(ReadableByteChannel bmpInput, WritableByteChannel bmpOutput)
             throws IOException {
         BufferAndHeader<BitmapFileHeader> fileBufferAndHeader = BitmapFileHeader.read(bmpInput);
         BitmapFileHeader fileHeader = fileBufferAndHeader.getHeader();
@@ -43,6 +66,12 @@ public class BmpTransformer {
         gapBuffer.flip();
         bmpOutput.write(gapBuffer);
 
-        return infoHeader;
+        return new Headers(fileHeader, infoHeader);
+    }
+
+    @Value
+    private class Headers {
+        public BitmapFileHeader fileHeader;
+        public BitmapInfoHeader infoHeader;
     }
 }

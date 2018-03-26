@@ -52,25 +52,30 @@ public class TextFromChannelsExtractor implements ChannelConsumer {
         extractedData.position(0);
         isDecodingFinished = true;
     }
+
+    public ByteBuffer extractedData() {
+        if (!this.isDecodingFinished) {
+            throw new IllegalStateException();
+        }
+        return this.extractedData.asReadOnlyBuffer();
+    }
+
     private void extractNext(long channel, ByteBuffer bufferTo) {
+
         long extractedBits = channel & channelMask;
         currentByte |= extractedBits << bitsForCurrentByteExtracted;
         bitsForCurrentByteExtracted += bitsPerChannel;
+
         if (bitsForCurrentByteExtracted == 8) {
             bufferTo.put(currentByte);
             bitsForCurrentByteExtracted = 0;
             currentByte = 0;
         }
     }
+
     private void extractUtilityHeader(long channel) {
         long mask = (1 << EmbeddingChannelMapper.UTILITY_HEADER_LENGTH_BITS) - 1;
         bitsPerChannel = 1 << (mask & channel);
         channelMask = (1 << bitsPerChannel) - 1;
-    }
-    public ByteBuffer extractedData() {
-        if (!this.isDecodingFinished) {
-            throw new IllegalStateException();
-        }
-        return this.extractedData.asReadOnlyBuffer();
     }
 }

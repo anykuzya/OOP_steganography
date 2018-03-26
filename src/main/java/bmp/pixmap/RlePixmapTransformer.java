@@ -9,12 +9,12 @@ import java.util.function.LongUnaryOperator;
 import static java.nio.ByteOrder.LITTLE_ENDIAN;
 
 @RequiredArgsConstructor
-public class RlePixmapTranformer implements PixmapTranformer {
+public class RlePixmapTransformer implements PixmapTransformer {
 
     private final ChannelMapperFactory channelMapperFactory;
 
     @Override
-    public void tranform(ByteBuffer pixmap, BitmapInfoHeader infoHeader) {
+    public void transform(ByteBuffer pixmap, BitmapInfoHeader infoHeader) {
         int channelCount = totalEditableChannelsCount(pixmap, infoHeader);
         ChannelMapper channelMapper = this.channelMapperFactory.createChannelMapper(channelCount);
         LongUnaryOperator pixelMapper = infoHeader.channelMasks().pixelMapper(channelMapper::mapChannel);

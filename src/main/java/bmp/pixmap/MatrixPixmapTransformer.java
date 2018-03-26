@@ -6,12 +6,12 @@ import lombok.RequiredArgsConstructor;
 import java.nio.ByteBuffer;
 
 @RequiredArgsConstructor
-public class MatrixPixmapTranformer implements PixmapTranformer {
+public class MatrixPixmapTransformer implements PixmapTransformer {
 
     private final ChannelMapperFactory channelMapperFactory;
 
     @Override
-    public void tranform(ByteBuffer pixmap, BitmapInfoHeader infoHeader) {
+    public void transform(ByteBuffer pixmap, BitmapInfoHeader infoHeader) {
         // TODO: implement
         // 1. посчитать, сколько у нас в картинке есть каналов и создать
         //    ChannelMapper channelMapper = this.channelMapperFactory.createChannelMapper(channelsCount)

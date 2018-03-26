@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static utils.NioUtils.createByteBuffer;
 
-public class RlePixmapTranformerTests {
+public class RlePixmapTransformerTests {
 
     private ChannelMapperFactory channelMapperFactory;
     @Test
@@ -34,7 +34,7 @@ public class RlePixmapTranformerTests {
 
         when(this.channelMapperFactory.createChannelMapper(anyInt())).thenReturn(l -> 1);
 
-        new RlePixmapTranformer(channelMapperFactory).tranform(pixmap, infoHeader);
+        new RlePixmapTransformer(channelMapperFactory).transform(pixmap, infoHeader);
 
         verify(channelMapperFactory).createChannelMapper(8);
 
