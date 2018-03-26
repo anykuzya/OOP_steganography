@@ -68,6 +68,10 @@ public class ChannelMasks {
                 .orElseThrow(() -> new IllegalStateException("at least one channel should be active"));
     }
 
+    public int activeChannelsCount() {
+        return (int) channels().filter(MaskAndShift::isActive).count();
+    }
+
     private Stream<MaskAndShift> channels() {
         return Stream.of(this.colorMapIndex, this.red, this.green, this.blue, this.alpha);
     }
