@@ -12,6 +12,8 @@ import java.nio.ByteBuffer;
 @RequiredArgsConstructor
 public class EmbeddingChannelMapper implements ChannelMapper {
 
+    static final int UTILITY_HEADER_LENGTH_BITS = 2;
+
     private final int bitsPerChannel;
     private final ByteBuffer bytesToEmbed;
 

@@ -42,7 +42,7 @@ public class ChannelMasks {
         return this.alpha.mask;
     }
 
-    ChannelMasks(long colorMapIndexMask, long redMask, long greenMask, long blueMask, long alphaMask) {
+    public ChannelMasks(long colorMapIndexMask, long redMask, long greenMask, long blueMask, long alphaMask) {
         this.colorMapIndex = MaskAndShift.ofMask(colorMapIndexMask);
         this.red = MaskAndShift.ofMask(redMask);
         this.green = MaskAndShift.ofMask(greenMask);
