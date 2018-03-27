@@ -2,28 +2,24 @@ package steganography;
 
 import bmp.pixmap.ChannelMapper;
 import bmp.pixmap.ChannelMapperFactory;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.lang.annotation.ElementType;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
 import java.util.PrimitiveIterator;
-import java.util.Spliterator;
 
-import static java.lang.annotation.ElementType.*;
 import static java.nio.ByteOrder.LITTLE_ENDIAN;
 
 /**
  * Формат кодирования информации (числа заголовка нужно хранить в little endian):
- *   1. размер закодированного текста в байтах -- 4 байта
- *   2. кодировка -- 1 байт.
- *          * 0 -- ASCII-US
- *          * 1 -- UTF-8
- *          * 2 -- UTF-16
- *   3. Сам текст
+ * 1. размер закодированного текста в байтах -- 4 байта
+ * 2. кодировка -- 1 байт.
+ * * 0 -- ASCII-US
+ * * 1 -- UTF-8
+ * * 2 -- UTF-16
+ * 3. Сам текст
  */
 @RequiredArgsConstructor
 public class TextToChannelsEmbedderFactory implements ChannelMapperFactory {
@@ -41,9 +37,11 @@ public class TextToChannelsEmbedderFactory implements ChannelMapperFactory {
         ByteBuffer embeddedData = embeddedData(availableChannels * this.bitsPerChannel);
         return constructMapper(bitsPerChannel, embeddedData);
     }
+
     EmbeddingChannelMapper constructMapper(int bitsPerChannel, ByteBuffer embeddedData) {
         return new EmbeddingChannelMapper(bitsPerChannel, embeddedData);
     }
+
     private ByteBuffer embeddedData(int bitCount) {
         int bitsToEmbed = bitCount - EmbeddingChannelMapper.UTILITY_HEADER_LENGTH_BITS;
         int bytesToEmbed = bitsToEmbed / Byte.SIZE;

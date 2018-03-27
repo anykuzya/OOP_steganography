@@ -17,9 +17,9 @@ public class BmpTransformer {
 
     private final ChannelMapperFactory channelMapperFactory;
 
-    public void transform(ReadableByteChannel bmpInput, WritableByteChannel bmpOutput) throws IOException{
+    public void transform(ReadableByteChannel bmpInput, WritableByteChannel bmpOutput) throws IOException {
 
-        Headers headers =  transferUponPixmap(bmpInput, bmpOutput);
+        Headers headers = transferUponPixmap(bmpInput, bmpOutput);
         BitmapInfoHeader infoHeader = headers.getInfoHeader();
         PixmapTransformer transformer;
         switch (infoHeader.type()) {

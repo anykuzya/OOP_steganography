@@ -1,10 +1,8 @@
 package steganography;
 
 import bmp.pixmap.ChannelConsumer;
-import lombok.RequiredArgsConstructor;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 import static java.nio.ByteOrder.LITTLE_ENDIAN;
 

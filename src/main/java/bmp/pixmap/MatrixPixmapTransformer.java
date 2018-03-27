@@ -36,7 +36,7 @@ public class MatrixPixmapTransformer implements PixmapTransformer {
         }
         int remainder = infoHeader.width() * (infoHeader.bitsPerPixel() / Byte.SIZE) % 4;
         if (remainder != 0) {
-            for (int i = 0; i < 4 - remainder; i++ ) {
+            for (int i = 0; i < 4 - remainder; i++) {
                 pixmapWriteView.put(pixmapReadView.get());
             }
         }
@@ -44,7 +44,7 @@ public class MatrixPixmapTransformer implements PixmapTransformer {
 
     private long readNextPixel(ByteBuffer pixmap, int bitsPerPixel) {
         long pixel = 0;
-        for (int i = 0; i < bitsPerPixel / Byte.SIZE; i++ ) {
+        for (int i = 0; i < bitsPerPixel / Byte.SIZE; i++) {
             long currentByte = pixmap.get() & 0xff;
             pixel |= currentByte << (i * Byte.SIZE);
         }
@@ -52,8 +52,8 @@ public class MatrixPixmapTransformer implements PixmapTransformer {
     }
 
     private void putPixel(ByteBuffer pixmap, int bitsPerPixel, long pixel) {
-        for (int i = 0; i < bitsPerPixel / Byte.SIZE; i++ ) {
-            pixmap.put((byte) ( (pixel >>> (i * Byte.SIZE))  & 0xff) );
+        for (int i = 0; i < bitsPerPixel / Byte.SIZE; i++) {
+            pixmap.put((byte) ((pixel >>> (i * Byte.SIZE)) & 0xff));
         }
     }
 

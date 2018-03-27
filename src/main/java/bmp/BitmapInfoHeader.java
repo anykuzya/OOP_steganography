@@ -211,6 +211,7 @@ public class BitmapInfoHeader {
             public Optional<Compression> extractCompression(ByteBuffer bytes) {
                 return Compression.ofValue(bytes.getInt(0x10));
             }
+
             @Override
             public ChannelMasks extractChannelMasks(ByteBuffer bytes, int bitsPerPixel) {
                 if (isClrUsed(bytes, bitsPerPixel)) {
@@ -243,6 +244,7 @@ public class BitmapInfoHeader {
             public Optional<Compression> extractCompression(ByteBuffer bytes) {
                 return Compression.ofValue(bytes.getInt(0x10));
             }
+
             @Override
             public ChannelMasks extractChannelMasks(ByteBuffer bytes, int bitsPerPixel) {
                 if (isClrUsed(bytes, bitsPerPixel)) {
@@ -287,9 +289,11 @@ public class BitmapInfoHeader {
                     blue,
                     alpha);
         }
+
         public boolean isClrUsed(ByteBuffer bytes, int bitsPerPixel) {
             return (bitsPerPixel <= 8) || (this != CORE && bytes.getInt(0x20) > 0);
         }
+
         private static ChannelMasks defaultMask(int bitsPerPixel) {
             switch (bitsPerPixel) {
                 case 16:
@@ -349,6 +353,7 @@ public class BitmapInfoHeader {
         public static Optional<Compression> ofValue(int value) {
             return Arrays.stream(values()).filter(v -> v.value == value).findAny();
         }
+
         public boolean isBitCountSuppoted(int bitCount) {
             return bitCountRestrictions.isEmpty() || bitCountRestrictions.contains(bitCount);
         }

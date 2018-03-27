@@ -7,7 +7,6 @@ import java.nio.ByteBuffer;
 import java.util.function.LongUnaryOperator;
 
 import static bmp.PixmapType.PIXEL_MATRIX;
-import static bmp.PixmapType.RLE;
 import static java.nio.ByteOrder.LITTLE_ENDIAN;
 
 @RequiredArgsConstructor
@@ -35,7 +34,7 @@ public class MatrixPixmapReader implements PixmapReader {
         }
         int remainder = infoHeader.width() * (infoHeader.bitsPerPixel() / Byte.SIZE) % 4;
         if (remainder != 0) {
-            for (int i = 0; i < 4 - remainder; i++ ) {
+            for (int i = 0; i < 4 - remainder; i++) {
                 pixmap.get();
             }
         }
@@ -43,7 +42,7 @@ public class MatrixPixmapReader implements PixmapReader {
 
     private long nextPixel(ByteBuffer pixmap, int bitsPerPixel) {
         long pixel = 0;
-        for (int i = 0; i < bitsPerPixel / Byte.SIZE; i++ ) {
+        for (int i = 0; i < bitsPerPixel / Byte.SIZE; i++) {
             long currentByte = pixmap.get() & 0xff;
             pixel |= currentByte << (i * Byte.SIZE);
         }
