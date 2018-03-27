@@ -5,6 +5,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
+
+import static java.util.Arrays.stream;
 
 @RequiredArgsConstructor
 @Getter
@@ -15,4 +18,8 @@ public enum Encoding {
 
     private final Charset charset;
     private final byte embeddedCode;
+
+    public static Optional<Encoding> byCode(byte code) {
+        return stream(values()).filter(encoding -> encoding.embeddedCode == code).findAny();
+    }
 }

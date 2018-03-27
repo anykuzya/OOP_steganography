@@ -15,12 +15,16 @@ public class RlePixmapTransformer implements PixmapTransformer {
 
     @Override
     public void transform(ByteBuffer pixmap, BitmapInfoHeader infoHeader) {
-        int channelCount = totalEditableChannelsCount(pixmap, infoHeader);
-        ChannelMapper channelMapper = this.channelMapperFactory.createChannelMapper(channelCount);
-        LongUnaryOperator pixelMapper = infoHeader.channelMasks().pixelMapper(channelMapper::mapChannel);
 
         ByteBuffer pixmapReadView = pixmap.duplicate().order(LITTLE_ENDIAN);
         ByteBuffer pixmapWriteView = pixmap.duplicate().order(LITTLE_ENDIAN);
+
+        int channelCount = totalEditableChannelsCount(pixmap.duplicate().order(LITTLE_ENDIAN), infoHeader);
+
+        ChannelMapper channelMapper = this.channelMapperFactory.createChannelMapper(channelCount);
+
+        LongUnaryOperator pixelMapper = infoHeader.channelMasks().pixelMapper(channelMapper::mapChannel);
+
         byte[] command = new byte[2];
         while (pixmapReadView.remaining() >= 2) {
             pixmapReadView.get(command);
