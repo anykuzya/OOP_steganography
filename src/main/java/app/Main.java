@@ -100,7 +100,7 @@ public class Main {
         OptionGroup modes = new OptionGroup();
         modes.addOption(new Option("E", "embed", false, "встроить текст в изображение"));
         modes.addOption(new Option("D", "decode", false, "извлечь текст из изображения"));
-        modes.addOption(new Option("H", "help", false, "вывести информацию об использовании"));
+        modes.addOption(new Option("h", "help", false, "вывести информацию об использовании"));
         modes.setRequired(true);
         options.addOptionGroup(modes);
 
