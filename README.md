@@ -40,5 +40,13 @@ tar xf build/distributions/bmp-steganography-1.0-SNAPSHOT.tar
 Запуск:
 ```bash
 cd bmp-steganography-1.0-SNAPSHOT/bin/
- ./bmp-steganography
+ ./bmp-steganography -h
+```
+
+Пример использования:
+```bash
+echo "Привет, HSE!!" > original.txt
+./bmp-steganography --embed -d original.txt -e utf-8 -i ../../rgb32.bmp -o with_embedded.bmp -b 1
+./bmp-steganography --decode -i with_embedded.bmp -o decoded.txt -e utf-8
+cat decoded.txt
 ```
