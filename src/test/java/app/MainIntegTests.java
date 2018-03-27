@@ -2,7 +2,6 @@ package app;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -14,14 +13,13 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 
 public class MainIntegTests {
 
-    Path workingDirectory;
+    private Path workingDirectory;
 
     @Test
-    @Ignore
     public void name() throws Exception {
         String[] images = new String[]{"pal8rle.bmp", "rgb24pal.bmp", "rgb32.bmp"};
         Path sourceTextPath = this.workingDirectory.resolve("source_text");
@@ -42,9 +40,9 @@ public class MainIntegTests {
                     "-o", imageWithTextPath.toString()
             );
             Path decodedTextPath = this.workingDirectory.resolve("decoded_text_" + imageName);
-            Main.main("--decode", "-i", imageWithTextPath.toString(), "-o", decodedTextPath.toString());
+            Main.main("--decode", "-i", imageWithTextPath.toString(), "-o", decodedTextPath.toString(), "-e", "utf-8");
 
-            assertEquals(Files.readAllBytes(sourceTextPath), Files.readAllBytes(decodedTextPath));
+            assertArrayEquals(Files.readAllBytes(sourceTextPath), Files.readAllBytes(decodedTextPath));
         }
     }
 

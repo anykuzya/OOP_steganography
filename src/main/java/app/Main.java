@@ -3,15 +3,13 @@ package app;
 import org.apache.commons.cli.*;
 import steganography.Encoding;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import static steganography.Encoding.US_ASCII;
-import static steganography.Encoding.UTF_16;
-import static steganography.Encoding.UTF_8;
+import static steganography.Encoding.*;
 
 public class Main {
 
@@ -64,7 +62,7 @@ public class Main {
 
                 String text2embed = "";
                 try {
-                    text2embed = Files.lines(Paths.get(embeddingTextPath), encoding.getCharset()).collect(Collectors.joining());
+                    text2embed = Files.lines(Paths.get(embeddingTextPath), encoding.getCharset()).collect(Collectors.joining("\n"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

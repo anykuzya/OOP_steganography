@@ -38,7 +38,7 @@ public class BmpTransformer {
         BitmapFileHeader fileHeader = headers.getFileHeader();
         ByteBuffer pixmap = ByteBuffer.allocate(fileHeader.fileSizeBytes() - fileHeader.pixmapOffsetBytes());
         bmpInput.read(pixmap);
-
+        pixmap.flip();
         transformer.transform(pixmap, infoHeader);
 
         bmpOutput.write(pixmap);

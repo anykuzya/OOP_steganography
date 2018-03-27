@@ -1,13 +1,15 @@
 package bmp;
 
-import bmp.pixmap.*;
+import bmp.pixmap.ChannelConsumer;
+import bmp.pixmap.MatrixPixmapReader;
+import bmp.pixmap.PixmapReader;
+import bmp.pixmap.RlePixmapReader;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
-import java.nio.channels.WritableByteChannel;
 
 @RequiredArgsConstructor
 public class BmpReader {
@@ -35,7 +37,7 @@ public class BmpReader {
         BitmapFileHeader fileHeader = headers.getFileHeader();
         ByteBuffer pixmap = ByteBuffer.allocate(fileHeader.fileSizeBytes() - fileHeader.pixmapOffsetBytes());
         bmpInput.read(pixmap);
-
+        pixmap.flip();
         reader.readPixmap(pixmap, infoHeader);
 
     }
